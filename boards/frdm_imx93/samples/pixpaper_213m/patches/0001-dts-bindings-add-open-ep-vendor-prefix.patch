@@ -1,0 +1,12 @@
+diff --git a/dts/bindings/vendor-prefixes.txt b/dts/bindings/vendor-prefixes.txt
+index a22bba8e637..b0df55117f6 100644
+--- a/dts/bindings/vendor-prefixes.txt
++++ b/dts/bindings/vendor-prefixes.txt
+@@ -517,6 +517,7 @@ onion	Onion Corporation
+ onnn	ON Semiconductor Corp.
+ ontat	On Tat Industrial Company
+ opalkelly	Opal Kelly Incorporated
++open-ep	Open-EP e-paper displays
+ opencores	OpenCores.org
+ openhwgroup	OpenHW Group
+ openisa	open-isa.org

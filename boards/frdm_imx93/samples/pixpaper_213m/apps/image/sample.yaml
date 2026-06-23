@@ -1,0 +1,17 @@
+sample:
+  name: pixpaper-213m e-paper - image (raw SPI)
+  description: >
+    Show a bundled image on the Open-EP pixpaper-213m 2.13" monochrome e-paper
+    panel, driven over raw LPSPI on the FRDM-IMX93 Cortex-M33.
+tests:
+  sample.boards.nxp.frdm_imx93.pixpaper_213m.image:
+    platform_allow:
+      - frdm_imx93/mimx9352/m33
+    tags:
+      - spi
+      - gpio
+      - displays
+    depends_on:
+      - spi
+      - gpio
+    build_only: true

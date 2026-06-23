@@ -1,0 +1,23 @@
+diff --git a/dts/arm/nxp/imx/nxp_imx93_m33.dtsi b/dts/arm/nxp/imx/nxp_imx93_m33.dtsi
+index a2c4130716b..cc2b6dbbf9c 100644
+--- a/dts/arm/nxp/imx/nxp_imx93_m33.dtsi
++++ b/dts/arm/nxp/imx/nxp_imx93_m33.dtsi
+@@ -108,6 +108,18 @@
+ 			status = "disabled";
+ 		};
+ 
++		lpspi3: spi@42550000 {
++			compatible = "nxp,lpspi";
++			reg = <0x42550000 0x4000>;
++			interrupts = <65 0>;
++			clocks = <&ccm IMX_CCM_LPSPI3_CLK 0x7c 0>;
++			tx-fifo-size = <16>;
++			rx-fifo-size = <16>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++		};
++
+ 		mu1: mailbox@44220000 {
+ 			compatible = "nxp,mbox-imx-mu";
+ 			reg = <0x44220000 DT_SIZE_K(4)>;

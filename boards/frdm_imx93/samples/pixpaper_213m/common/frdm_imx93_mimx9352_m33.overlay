@@ -1,0 +1,29 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Open-EP pixpaper-213m 2.13" e-paper on FRDM-IMX93 / Cortex-M33, driven over
+ * LPSPI3:
+ *   SPI  : LPSPI3, hardware PCS0
+ *   DC   : GPIO2_IO00 (low = command)
+ *   RST  : GPIO2_IO05 (low = reset)
+ *   BUSY : GPIO2_IO26 (high = busy)
+ */
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+&lpspi3 {
+	status = "okay";
+	pinctrl-0 = <&spi3_default>;
+	pinctrl-names = "default";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	epd: epd@0 {
+		compatible = "open-ep,pixpaper-213m";
+		reg = <0>;
+		spi-max-frequency = <5000000>;
+		dc-gpios = <&gpio2 0 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>;
+		busy-gpios = <&gpio2 26 GPIO_ACTIVE_HIGH>;
+	};
+};

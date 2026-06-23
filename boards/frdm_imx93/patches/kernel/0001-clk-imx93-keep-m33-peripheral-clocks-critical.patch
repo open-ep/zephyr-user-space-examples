@@ -1,0 +1,74 @@
+From e161a7d69d65a326b21028644845b52eb7dca1ec Mon Sep 17 00:00:00 2001
+From: LiangCheng Wang <zaq14760@gmail.com>
+Date: Tue, 23 Jun 2026 11:17:07 +0800
+Subject: [PATCH] clk: imx93: keep M33 peripheral clocks critical
+
+The Cortex-M33 does not enable its own peripheral root/gate clocks; it
+assumes they are already running. Linux disables "unused" clocks late in
+boot via clk_disable_unused(), so when the M33 (started from Linux via
+remoteproc) first touches a gated peripheral the access stalls the
+AHB/AXI bus and freezes the whole SoC. The clk_ignore_unused boot arg
+does not help, because these clocks are already off by then.
+
+Mark CLK_IS_CRITICAL on the clocks the M33 uses so they stay enabled:
+LPUART2 (console) and LPSPI3 (e-paper SPI), both root and gate, plus the
+GPIO2 gate (DC/RST/BUSY pins). This mirrors the existing handling of the
+cm33 / m33_root clocks.
+
+Signed-off-by: LiangCheng Wang <zaq14760@gmail.com>
+---
+ drivers/clk/imx/clk-imx93.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/imx/clk-imx93.c b/drivers/clk/imx/clk-imx93.c
+index bfcd9cbe5b8e..89ac78bb2a44 100644
+--- a/drivers/clk/imx/clk-imx93.c
++++ b/drivers/clk/imx/clk-imx93.c
+@@ -84,7 +84,7 @@ static const struct imx93_clk_root {
+ 	{ IMX93_CLK_CAN1,		"can1_root",		0x0b80,	LOW_SPEED_IO_SEL, },
+ 	{ IMX93_CLK_CAN2,		"can2_root",		0x0c00,	LOW_SPEED_IO_SEL, },
+ 	{ IMX93_CLK_LPUART1,		"lpuart1_root",		0x0c80,	LOW_SPEED_IO_SEL, },
+-	{ IMX93_CLK_LPUART2,		"lpuart2_root",		0x0d00,	LOW_SPEED_IO_SEL, },
++	{ IMX93_CLK_LPUART2,		"lpuart2_root",		0x0d00,	LOW_SPEED_IO_SEL, CLK_IS_CRITICAL, },
+ 	{ IMX93_CLK_LPUART3,		"lpuart3_root",		0x0d80,	LOW_SPEED_IO_SEL, },
+ 	{ IMX93_CLK_LPUART4,		"lpuart4_root",		0x0e00,	LOW_SPEED_IO_SEL, },
+ 	{ IMX93_CLK_LPUART5,		"lpuart5_root",		0x0e80,	LOW_SPEED_IO_SEL, },
+@@ -101,7 +101,7 @@ static const struct imx93_clk_root {
+ 	{ IMX93_CLK_LPI2C8,		"lpi2c8_root",		0x1400,	LOW_SPEED_IO_SEL, },
+ 	{ IMX93_CLK_LPSPI1,		"lpspi1_root",		0x1480,	LOW_SPEED_IO_SEL, },
+ 	{ IMX93_CLK_LPSPI2,		"lpspi2_root",		0x1500,	LOW_SPEED_IO_SEL, },
+-	{ IMX93_CLK_LPSPI3,		"lpspi3_root",		0x1580,	LOW_SPEED_IO_SEL, },
++	{ IMX93_CLK_LPSPI3,		"lpspi3_root",		0x1580,	LOW_SPEED_IO_SEL, CLK_IS_CRITICAL, },
+ 	{ IMX93_CLK_LPSPI4,		"lpspi4_root",		0x1600,	LOW_SPEED_IO_SEL, },
+ 	{ IMX93_CLK_LPSPI5,		"lpspi5_root",		0x1680,	LOW_SPEED_IO_SEL, },
+ 	{ IMX93_CLK_LPSPI6,		"lpspi6_root",		0x1700,	LOW_SPEED_IO_SEL, },
+@@ -187,7 +187,7 @@ static const struct imx93_clk_ccgr {
+ 	{ IMX93_CLK_EDMA2_GATE,		"edma2",	"wakeup_axi_root",	0x8580, },
+ 	{ IMX93_CLK_FLEXSPI1_GATE,	"flexspi1",	"flexspi1_root",	0x8640, },
+ 	{ IMX93_CLK_GPIO1_GATE,		"gpio1",	"m33_root",		0x8880, },
+-	{ IMX93_CLK_GPIO2_GATE,		"gpio2",	"bus_wakeup_root",	0x88c0, },
++	{ IMX93_CLK_GPIO2_GATE,		"gpio2",	"bus_wakeup_root",	0x88c0, CLK_IS_CRITICAL, },
+ 	{ IMX93_CLK_GPIO3_GATE,		"gpio3",	"bus_wakeup_root",	0x8900, },
+ 	{ IMX93_CLK_GPIO4_GATE,		"gpio4",	"bus_wakeup_root",	0x8940, },
+ 	{ IMX93_CLK_FLEXIO1_GATE,	"flexio1",	"flexio1_root",		0x8980, 0, NULL, PLAT_IMX93},
+@@ -205,7 +205,7 @@ static const struct imx93_clk_ccgr {
+ 	{ IMX93_CLK_CAN1_GATE,		"can1",		"can1_root",		0x8c80, },
+ 	{ IMX93_CLK_CAN2_GATE,		"can2",		"can2_root",		0x8cc0, },
+ 	{ IMX93_CLK_LPUART1_GATE,	"lpuart1",	"lpuart1_root",		0x8d00, },
+-	{ IMX93_CLK_LPUART2_GATE,	"lpuart2",	"lpuart2_root",		0x8d40, },
++	{ IMX93_CLK_LPUART2_GATE,	"lpuart2",	"lpuart2_root",		0x8d40, CLK_IS_CRITICAL, },
+ 	{ IMX93_CLK_LPUART3_GATE,	"lpuart3",	"lpuart3_root",		0x8d80, },
+ 	{ IMX93_CLK_LPUART4_GATE,	"lpuart4",	"lpuart4_root",		0x8dc0, },
+ 	{ IMX93_CLK_LPUART5_GATE,	"lpuart5",	"lpuart5_root",		0x8e00, },
+@@ -222,7 +222,7 @@ static const struct imx93_clk_ccgr {
+ 	{ IMX93_CLK_LPI2C8_GATE,	"lpi2c8",	"lpi2c8_root",		0x90c0, },
+ 	{ IMX93_CLK_LPSPI1_GATE,	"lpspi1",	"lpspi1_root",		0x9100, },
+ 	{ IMX93_CLK_LPSPI2_GATE,	"lpspi2",	"lpspi2_root",		0x9140, },
+-	{ IMX93_CLK_LPSPI3_GATE,	"lpspi3",	"lpspi3_root",		0x9180, },
++	{ IMX93_CLK_LPSPI3_GATE,	"lpspi3",	"lpspi3_root",		0x9180, CLK_IS_CRITICAL, },
+ 	{ IMX93_CLK_LPSPI4_GATE,	"lpspi4",	"lpspi4_root",		0x91c0, },
+ 	{ IMX93_CLK_LPSPI5_GATE,	"lpspi5",	"lpspi5_root",		0x9200, },
+ 	{ IMX93_CLK_LPSPI6_GATE,	"lpspi6",	"lpspi6_root",		0x9240, },
+-- 
+2.34.1
+
