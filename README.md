@@ -1,24 +1,31 @@
 # Zephyr e-paper examples
 
-Zephyr firmware that drives e-paper panels from a companion core, started from
-the host Linux via remoteproc — plus the kernel and devicetree patches each
-platform needs. Examples are organized per board under `boards/`, so more
-boards and SoCs can be added alongside the existing ones.
+Zephyr firmware that drives e-paper panels — from a companion core started by
+the host Linux via remoteproc, or standalone on a small MCU — plus the kernel,
+devicetree, and board-support patches each platform needs. Examples are
+organized per board under `boards/`, so more boards and SoCs can be added
+alongside the existing ones.
 
 ## Supported
 
 | Board | Core | Panel | Sample |
 | ----- | ---- | ----- | ------ |
 | [FRDM-IMX93](boards/frdm_imx93/) | Cortex-M33 | Open-EP pixpaper-213m (2.13", raw SPI) | [pixpaper_213m](boards/frdm_imx93/samples/pixpaper_213m/) |
+| [UIAPduino Pro Micro CH32V003](boards/uiapduino/) | CH32V003 (RISC-V, standalone) | Open-EP pixpaper-213m (2.13", bit-banged SPI) | [pixpaper_213m](boards/uiapduino/samples/pixpaper_213m/) |
 
 ## How it works
 
-The companion core (e.g. the i.MX93 Cortex-M33) runs a Zephyr firmware that
-drives the panel over SPI + GPIO. Linux, on the application cores, loads and
-starts that firmware via remoteproc (`zephyr.elf` in `/lib/firmware`, then
-`echo start > /sys/class/remoteproc/.../state`). Because the M-core does not
-bring up its own peripheral clocks, the platform usually needs a small kernel
-change so Linux keeps those clocks enabled — see each board's README.
+On remoteproc platforms, the companion core (e.g. the i.MX93 Cortex-M33) runs
+a Zephyr firmware that drives the panel over SPI + GPIO. Linux, on the
+application cores, loads and starts that firmware via remoteproc (`zephyr.elf`
+in `/lib/firmware`, then `echo start > /sys/class/remoteproc/.../state`).
+Because the M-core does not bring up its own peripheral clocks, the platform
+usually needs a small kernel change so Linux keeps those clocks enabled — see
+each board's README.
+
+On standalone MCU boards (e.g. the UIAPduino CH32V003), the Zephyr firmware is
+the whole system: it draws at boot and is flashed over the board's USB
+bootloader — no Linux involved.
 
 ## Layout
 
