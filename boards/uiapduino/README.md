@@ -6,29 +6,75 @@ flashed over USB Type-C through its rv003usb bootloader — no external
 programmer needed. Unlike the remoteproc boards in this repo, this is a
 standalone MCU: the Zephyr firmware IS the whole system.
 
-## Board support in Zephyr
+## Setup from scratch
 
-Upstream support is in review
+Two separate downloads are involved — don't confuse them:
+
+- the **Zephyr source tree** (kernel, drivers — the code that gets compiled), and
+- the **Zephyr SDK** (the RISC-V cross-toolchain that compiles it).
+
+### 1. Toolchain (one-time per machine)
+
+Your host gcc targets x86; the board needs `riscv64-zephyr-elf-gcc` from the
+Zephyr SDK, **version >= 1.0** (0.17.x is rejected by this tree). The minimal
+tarball plus one toolchain is a few hundred MB instead of several GB:
+
+```bash
+cd ~
+wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v1.0.1/zephyr-sdk-1.0.1_linux-x86_64_minimal.tar.xz
+tar xf zephyr-sdk-1.0.1_linux-x86_64_minimal.tar.xz
+cd zephyr-sdk-1.0.1
+./setup.sh -t riscv64-zephyr-elf -c   # -c registers it in ~/.cmake so west finds it automatically
+```
+
+You will also need the usual build tools: `cmake`, `ninja-build`,
+`device-tree-compiler`, `python3-venv` (e.g. via `apt install`).
+
+### 2. Zephyr workspace
+
+Upstream board support is in review
 ([zephyrproject-rtos/zephyr#112278](https://github.com/zephyrproject-rtos/zephyr/pull/112278),
 board `uiapduino_pro_micro_ch32v003`). Until it merges, use the PR branch
 directly — **this is what every sample here was developed and
 hardware-verified on**:
 
 ```bash
-west init -m https://github.com/yashi/zephyr --mr add-uiap-pro-micro zephyrproject
-cd zephyrproject
-# pin the commit these samples were verified against (the branch may be
-# rebased by its author at any time):
-git -C zephyr checkout bf54170b20c
-west update hal_wch
+mkdir ~/zephyrproject && cd ~/zephyrproject
+python3 -m venv .venv
+.venv/bin/pip install west
+
+# fetch the Zephyr source (PR branch from the author's fork)
+.venv/bin/west init -m https://github.com/yashi/zephyr --mr add-uiap-pro-micro .
+
+# pin the commit these samples were verified against:
+git -C zephyr checkout 25179831f40
+
+# fetch ONLY the WCH register-definition module (a bare `west update`
+# would download every vendor HAL — several GB you don't need)
+.venv/bin/west update hal_wch
+
+# python packages Zephyr's build scripts need (devicetree/Kconfig tooling)
+.venv/bin/pip install -r zephyr/scripts/requirements-base.txt
 ```
+
+If the `git checkout` fails with `pathspec ... did not match`, the PR branch
+has been rebased again and the pinned commit is no longer fetchable — build
+against the current branch tip instead (`git -C zephyr log --oneline -1` to
+record which), and expect a slightly different binary than documented.
 
 Once the PR merges upstream, switch the manifest back to
 `zephyrproject-rtos/zephyr` `main` — the board name stays the same, so the
 apps need no changes.
 
-Requires a Zephyr SDK with the `riscv64-zephyr-elf` toolchain (SDK >= 1.0);
-only the `hal_wch` module is needed.
+### 3. Build a sample
+
+```bash
+cd ~/zephyrproject
+.venv/bin/west build -b uiapduino_pro_micro_ch32v003 path/to/this/repo/boards/uiapduino/samples/pixpaper_213m/apps/snake
+```
+
+The firmware lands in `build/zephyr/zephyr.bin` (note the extra `/zephyr/`
+path segment). Flashing: see below.
 
 ## Hardware prerequisite: 3.3V rework
 
