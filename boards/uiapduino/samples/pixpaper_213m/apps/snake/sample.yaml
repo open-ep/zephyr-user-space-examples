@@ -1,0 +1,18 @@
+sample:
+  name: pixpaper-213m e-paper - snake game (partial update)
+  description: >
+    Snake game on the Open-EP pixpaper-213m 2.13" monochrome e-paper panel,
+    steered over the UART console. Demonstrates flicker-free partial updates
+    on a moving object: custom partial LUT, per-frame diff-driving of only
+    the changed cells, and the 0x24/0x26 dual-plane sync discipline.
+tests:
+  sample.boards.uiap.uiapduino.pixpaper_213m.snake:
+    platform_allow:
+      - uiapduino_pro_micro_ch32v003
+    tags:
+      - gpio
+      - uart
+      - displays
+    depends_on:
+      - gpio
+    build_only: true
