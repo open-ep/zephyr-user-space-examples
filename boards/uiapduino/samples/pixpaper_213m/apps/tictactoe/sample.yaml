@@ -1,0 +1,18 @@
+sample:
+  name: pixpaper-213m e-paper - tic-tac-toe game (partial update)
+  description: >
+    Tic-tac-toe against the computer on the Open-EP pixpaper-213m 2.13"
+    monochrome e-paper panel, controlled over the UART console. The selection
+    cursor moves with fast partial updates; every placed move triggers one
+    full refresh, so pieces are drawn once and never erased.
+tests:
+  sample.boards.uiap.uiapduino.pixpaper_213m.tictactoe:
+    platform_allow:
+      - uiapduino_pro_micro_ch32v003
+    tags:
+      - gpio
+      - uart
+      - displays
+    depends_on:
+      - gpio
+    build_only: true

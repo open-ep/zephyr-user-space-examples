@@ -16,6 +16,8 @@ from flash with no framebuffer.
 | --- | ------------ |
 | [console](apps/console/) | Draw a bundled image at boot, then serve an interactive UART console (redraw, fill, load a new image over UART, diagnostics). |
 | [snake](apps/snake/) | Snake game steered over UART — demonstrates flicker-free partial updates on a moving object (custom LUT, 0x24/0x26 dual-plane sync). |
+| [tictactoe](apps/tictactoe/) | Tic-tac-toe vs the computer — cursor moves with partial updates, every placed move confirms with one full refresh. |
+| [pong](apps/pong/) | Paddle-ball on an inverted court — the partial-update stress test (ball redraws its full span every frame). |
 
 All apps share the wiring overlay (`common/`). The host-side PNG-to-frame
 converter for the console's `load` command is in `tools/`.

@@ -1,0 +1,19 @@
+sample:
+  name: pixpaper-213m e-paper - pong game (partial update)
+  description: >
+    Paddle-ball (pong-style) game on the Open-EP pixpaper-213m 2.13"
+    monochrome e-paper panel, controlled over the UART console. The most
+    demanding partial-update demo here: a ball sweeping the screen every
+    frame on an inverted (black) court, driven with the dual-plane sync
+    discipline.
+tests:
+  sample.boards.uiap.uiapduino.pixpaper_213m.pong:
+    platform_allow:
+      - uiapduino_pro_micro_ch32v003
+    tags:
+      - gpio
+      - uart
+      - displays
+    depends_on:
+      - gpio
+    build_only: true
