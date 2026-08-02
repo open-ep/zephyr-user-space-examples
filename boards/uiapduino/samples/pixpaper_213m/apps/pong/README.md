@@ -6,6 +6,12 @@ is the most demanding one for the panel: unlike the snake (one cell moves per
 tick) or tic-tac-toe (only a cursor moves), the ball erases and redraws its
 full trajectory span every single frame.
 
+## Demo video
+
+All three games (snake, tic-tac-toe, pong) running on the panel:
+
+[![pixpaper-213m game demos on UIAPduino](https://img.youtube.com/vi/CU8zF4QtOJw/maxresdefault.jpg)](https://www.youtube.com/watch?v=CU8zF4QtOJw)
+
 ## Controls
 
 | Key | Action |

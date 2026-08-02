@@ -5,6 +5,12 @@ Classic snake on the e-paper, steered over USART1 (115200 8N1, TX=PD5/RX=PD6
 start/restart; every move is a fast partial update that rewrites just the
 cells that changed (new head, vacated tail, eaten/respawned food).
 
+## Demo video
+
+All three games (snake, tic-tac-toe, pong) running on the panel:
+
+[![pixpaper-213m game demos on UIAPduino](https://img.youtube.com/vi/CU8zF4QtOJw/maxresdefault.jpg)](https://www.youtube.com/watch?v=CU8zF4QtOJw)
+
 ## Controls
 
 | Key | Action |

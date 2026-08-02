@@ -3,6 +3,12 @@
 Tic-tac-toe against the computer (you are O, it answers with X), played over
 USART1 (115200 8N1, TX=PD5/RX=PD6 — external 3.3V USB-UART dongle).
 
+## Demo video
+
+All three games (snake, tic-tac-toe, pong) running on the panel:
+
+[![pixpaper-213m game demos on UIAPduino](https://img.youtube.com/vi/CU8zF4QtOJw/maxresdefault.jpg)](https://www.youtube.com/watch?v=CU8zF4QtOJw)
+
 ## Controls
 
 | Key | Action |
