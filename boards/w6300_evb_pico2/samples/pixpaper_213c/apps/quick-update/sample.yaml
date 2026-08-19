@@ -1,0 +1,15 @@
+sample:
+  name: pixpaper-213c e-paper - image and colour bars
+  description: >
+    Alternate a dithered image and a four-colour bar pattern on the Open-EP pixpaper-213c 2.13" 4-colour e-paper panel.
+tests:
+  sample.boards.openep.w6300_evb_pico2.quick_update:
+    platform_allow:
+      - w6300_evb_pico2/rp2350a/m33
+      - rpi_pico2/rp2350a/m33
+    tags:
+      - gpio
+      - displays
+    depends_on:
+      - gpio
+    build_only: true

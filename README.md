@@ -12,6 +12,7 @@ alongside the existing ones.
 | ----- | ---- | ----- | ------ |
 | [FRDM-IMX93](boards/frdm_imx93/) | Cortex-M33 | Open-EP pixpaper-213m (2.13", raw SPI) | [pixpaper_213m](boards/frdm_imx93/samples/pixpaper_213m/) |
 | [UIAPduino Pro Micro CH32V003](boards/uiapduino/) | CH32V003 (RISC-V, standalone) | Open-EP pixpaper-213m (2.13", bit-banged SPI) | [pixpaper_213m](boards/uiapduino/samples/pixpaper_213m/) |
+| [W6300-EVB-Pico2](boards/w6300_evb_pico2/) | RP2350 (Cortex-M33, standalone) | Open-EP pixpaper-213m (2.13" mono) / pixpaper-213c (2.13" 4-colour) | [pixpaper_213m](boards/w6300_evb_pico2/samples/pixpaper_213m/), [pixpaper_213c](boards/w6300_evb_pico2/samples/pixpaper_213c/) |
 
 ## How it works
 
@@ -23,9 +24,11 @@ Because the M-core does not bring up its own peripheral clocks, the platform
 usually needs a small kernel change so Linux keeps those clocks enabled — see
 each board's README.
 
-On standalone MCU boards (e.g. the UIAPduino CH32V003), the Zephyr firmware is
-the whole system: it draws at boot and is flashed over the board's USB
-bootloader — no Linux involved.
+On standalone MCU boards (e.g. the UIAPduino CH32V003 or the RP2350-based
+W6300-EVB-Pico2), the Zephyr firmware is the whole system: it draws at boot and
+is flashed over the board's USB bootloader — no Linux involved. How much the
+firmware can do scales with the board: 16 KB of flash fits a mono image and a
+game, while 2 MB fits 4-colour images, 4-level grayscale and a video clip.
 
 ## Layout
 

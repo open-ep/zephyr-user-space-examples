@@ -1,0 +1,28 @@
+/*
+ * PixPaper 2.13" 4-color (PIXPAPER-213-C) wiring on W6300-EVB-Pico2.
+ *
+ * The W6300 ethernet chip owns GP15-GP22 and the default console UART owns
+ * GP0/GP1, so the panel goes on the free GP2..GP7 block (header pins 4-9,
+ * all on the same edge - easy jumper wiring):
+ *
+ *   panel CLK  -> GP2    panel DC   -> GP5
+ *   panel DIN  -> GP3    panel RST  -> GP6
+ *   panel CS   -> GP4    panel BUSY -> GP7
+ *   VCC -> 3V3 (pin 36), GND -> GND
+ *
+ * SPI is bit-banged over plain GPIOs: the panel is a slow write-only device
+ * (a full 4-color refresh takes 15-25 s), so a real SPI controller buys
+ * nothing and this keeps the app identical in shape to the other PixPaper
+ * ports.
+ */
+
+/ {
+	zephyr,user {
+		sck-gpios  = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+		mosi-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+		cs-gpios   = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+		dc-gpios   = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+		rst-gpios  = <&gpio0 6 GPIO_ACTIVE_HIGH>;
+		busy-gpios = <&gpio0 7 GPIO_ACTIVE_HIGH>;
+	};
+};
