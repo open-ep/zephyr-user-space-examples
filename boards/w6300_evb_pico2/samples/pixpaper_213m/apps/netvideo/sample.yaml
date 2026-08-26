@@ -1,0 +1,19 @@
+sample:
+  name: pixpaper-213m e-paper - network frame player
+  description: >
+    Receive packed frames over Ethernet and show them on the pixpaper-213m.
+    Live mode streams from the PC; clip mode uploads up to 96 frames into RAM
+    and loops them on the board with the network unplugged. The board prints
+    its DHCP address on the panel so you know where to send.
+tests:
+  sample.boards.openep.w6300_evb_pico2.netvideo:
+    platform_allow:
+      - w6300_evb_pico2/rp2350a/m33
+    tags:
+      - gpio
+      - displays
+      - networking
+    depends_on:
+      - gpio
+      - netif
+    build_only: true

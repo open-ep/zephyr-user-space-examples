@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Wig Cheng <onlywig@gmail.com>
+Date: Sat, 22 Aug 2026 23:44:00 +0800
+Subject: [PATCH] drivers: ethernet: w6300: service interrupts from the monitor
+ path
+
+The INT line is configured edge-triggered (GPIO_INT_EDGE_FALLING) and
+w6300_handle_interrupts() bails out when an Sn_IR read fails while INT
+may still be asserted. No new edge fires in that state, int_sem is
+never given again, and the monitor timeout path only updates the link
+status: interrupt handling stays disabled permanently.
+
+Run w6300_handle_interrupts() on the monitor period as well. The
+handler checks the INT pin first, so this is a no-op while nothing is
+pending, and it recovers a missed edge within
+CONFIG_ETH_W6300_MONITOR_PERIOD otherwise.
+
+The sibling W5500 driver gained the same kind of protection in commit
+d61128427155 ("drivers: eth_w5500: Check W5500 int pin after
+processing interrupt").
+
+Signed-off-by: Wig Cheng <onlywig@gmail.com>
+---
+ drivers/ethernet/eth_w6300.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/ethernet/eth_w6300.c b/drivers/ethernet/eth_w6300.c
+index 43cc11f3b01..9b5392ff571 100644
+--- a/drivers/ethernet/eth_w6300.c
++++ b/drivers/ethernet/eth_w6300.c
+@@ -483,7 +483,7 @@ static void w6300_thread(void *p1, void *p2, void *p3)
+ 			w6300_update_link_status(dev);
+ 		}
+ 
+-		if (res == 0 && ctx->state.is_up) {
++		if (ctx->state.is_up) {
+ 			w6300_handle_interrupts(dev, &config->interrupt);
+ 		}
+ 	}

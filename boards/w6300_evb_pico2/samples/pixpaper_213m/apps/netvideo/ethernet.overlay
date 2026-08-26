@@ -1,0 +1,25 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Ethernet-side tweaks for the netvideo app. The panel wiring itself lives in
+ * ../../common/w6300_evb_pico2.overlay; both overlays are applied together by
+ * this app's CMakeLists.txt.
+ */
+
+&ethernet {
+	/*
+	 * The board devicetree caps the W6300's bit-banged SPI at 500 kHz,
+	 * which is below what this app streams. Raising the cap lets the
+	 * bit-bang driver run as fast as the CPU can toggle the pins
+	 * (roughly 1-2 MHz effective on the M33).
+	 */
+	spi-max-frequency = <8000000>;
+
+	/*
+	 * A fixed locally-administered MAC, so the DHCP server hands out the
+	 * same address every boot instead of treating each power-up as a new
+	 * client. Change the last bytes if you run several boards on one LAN.
+	 */
+	/delete-property/ zephyr,random-mac-address;
+	local-mac-address = [02 57 36 33 00 01];
+};

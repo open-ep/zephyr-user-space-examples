@@ -6,10 +6,13 @@ is a Raspberry Pi Pico 2 form-factor board: **RP2350** (dual Cortex-M33 @ 150 MH
 UIAPduino, this is a standalone MCU — the Zephyr firmware is the whole system.
 
 Board support is **upstream** (`w6300_evb_pico2`), so no PR branch or patches are
-needed. The same firmware also builds for the plain
-**Raspberry Pi Pico 2** (`rpi_pico2/rp2350a/m33`) — the two produce a
-byte-identical binary here, because these samples only use GP2–GP7 and never
-touch the W6300.
+needed. Most of the firmware here also builds for the plain
+**Raspberry Pi Pico 2** (`rpi_pico2/rp2350a/m33`) and produces a byte-identical
+binary, because those samples only use GP2–GP7 and never touch the W6300.
+
+The one exception is [netvideo](samples/pixpaper_213m/apps/netvideo/), which
+drives the W6300 to receive frames over Ethernet — that one needs this board,
+and two driver fixes listed in its README.
 
 ## Why this board is comfortable
 
@@ -100,9 +103,22 @@ SPI is bit-banged over plain GPIOs on purpose: these panels are slow,
 write-only devices, so a hardware SPI controller buys nothing and the code stays
 identical across boards.
 
+## Zephyr patches
+
+[`patches/zephyr/`](patches/zephyr/) holds two `eth_w6300` driver fixes needed
+by the `netvideo` sample: without them the chip's TX path wedges under
+sustained traffic and the board drops off the network until it is power-cycled.
+They are submitted upstream as
+[zephyrproject-rtos/zephyr#117112](https://github.com/zephyrproject-rtos/zephyr/pull/117112)
+(open, awaiting review as of August 2026) — once that merges, skip them. The
+copies here are pinned and work offline; `curl -L
+https://github.com/zephyrproject-rtos/zephyr/pull/117112.patch | git apply`
+fetches the current version instead. Nothing else in this repo needs a patched
+Zephyr.
+
 ## Samples
 
 | Sample | Panel |
 | ------ | ----- |
-| [pixpaper_213m](samples/pixpaper_213m/) | Open-EP pixpaper-213m 2.13" mono (boot image, games showcase, video player) |
+| [pixpaper_213m](samples/pixpaper_213m/) | Open-EP pixpaper-213m 2.13" mono (boot image, games showcase, offline video player, Ethernet frame player) |
 | [pixpaper_213c](samples/pixpaper_213c/) | Open-EP pixpaper-213c 2.13" 4-colour (image + colour bars) |

@@ -19,10 +19,18 @@ takes about 2 s, and partial refreshes take a few hundred ms.
 | [boot-image](apps/boot-image/) | Draw the bundled image once at boot, then put the panel into deep sleep. Start here. |
 | [showcase](apps/showcase/) | Infinite scene loop, no input: self-playing Tetris, Snake and Pong, a static label image, and two 4-level grayscale images. |
 | [video](apps/video/) | Play a pre-packed `.epdv` clip embedded in flash, looping forever at 5-6 fps. |
+| [netvideo](apps/netvideo/) | Push frames over Ethernet: the board shows its DHCP address on the panel, then streams live from the PC or loops a clip uploaded into RAM. |
 
-`tools/` holds the host-side converters: `png2gray4.py` (PNG to the two
-grayscale planes), `video2epd.py` (video or image folder to `.epdv`) and
-`epdv2h.py` (`.epdv` to a C header, since there is no filesystem on the board).
+`tools/` holds the host-side helpers: `png2gray4.py` (PNG to the two grayscale
+planes), `video2epd.py` (video or image folder to `.epdv`), `epdv2h.py`
+(`.epdv` to a C header, since there is no filesystem on the board) and
+`epdstream.py` (the sender for `netvideo` — video, GIF, webcam or screen to a
+panel on the network).
+
+`netvideo` is the only app here that needs anything beyond the panel: it drives
+the board's W6300 ethernet, and until [PR #117112](https://github.com/zephyrproject-rtos/zephyr/pull/117112)
+lands it needs the two driver fixes in
+[`../../patches/zephyr/`](../../patches/zephyr/). Its README explains both.
 
 ## The two partial-update disciplines
 
