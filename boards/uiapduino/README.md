@@ -30,6 +30,15 @@ cd zephyr-sdk-1.0.1
 You will also need the usual build tools: `cmake`, `ninja-build`,
 `device-tree-compiler`, `python3-venv` (e.g. via `apt install`).
 
+If more than one Zephyr SDK is registered on your machine (for example a
+RISC-V-only install for another board), CMake may pick one that lacks the
+`riscv64-zephyr-elf` toolchain and fail with `riscv64-zephyr-elf-gcc not found`. Point the build at
+the right SDK explicitly, then rebuild pristine (`-p always`):
+
+```bash
+export ZEPHYR_SDK_INSTALL_DIR=~/zephyr-sdk-1.0.1   # the SDK that has riscv64-zephyr-elf
+```
+
 ### 2. Zephyr workspace
 
 Upstream board support is in review

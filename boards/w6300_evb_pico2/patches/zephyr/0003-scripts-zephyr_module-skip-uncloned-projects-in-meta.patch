@@ -1,0 +1,14 @@
+diff --git a/scripts/zephyr_module.py b/scripts/zephyr_module.py
+index 1a5996ae636..0d0540cc9cd 100755
+--- a/scripts/zephyr_module.py
++++ b/scripts/zephyr_module.py
+@@ -632,6 +632,9 @@ def process_meta(zephyr_base, west_projs, modules, extra_modules=None,
+ 
+         # Iterates on all projects except the first one (manifest)
+         for project in projects[1:]:
++            # skip manifest projects that are not cloned in this workspace
++            if not Path(project.posixpath).exists():
++                continue
+             meta_project, dirty = _create_meta_project(project.posixpath)
+             workspace_dirty |= dirty
+             meta_projects.append(meta_project)

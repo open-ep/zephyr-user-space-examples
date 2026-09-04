@@ -44,6 +44,15 @@ cd zephyr-sdk-1.0.1
 
 You also need `cmake`, `ninja-build`, `device-tree-compiler` and `python3-venv`.
 
+If more than one Zephyr SDK is registered on your machine (for example a
+RISC-V-only install for another board), CMake may pick one that lacks the
+`arm-zephyr-eabi` toolchain and fail with `arm-zephyr-eabi-gcc not found`. Point the build at
+the right SDK explicitly, then rebuild pristine (`-p always`):
+
+```bash
+export ZEPHYR_SDK_INSTALL_DIR=~/zephyr-sdk-1.0.1   # the SDK that has arm-zephyr-eabi
+```
+
 ### 2. Zephyr workspace
 
 ```bash

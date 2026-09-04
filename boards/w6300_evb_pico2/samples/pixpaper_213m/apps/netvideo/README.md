@@ -156,6 +156,12 @@ west spdx -d build --analyze-includes --include-sdk
 # -> build/spdx/{app,zephyr,build,sdk,modules-deps}.spdx
 ```
 
+If the build dies in `zephyr_module.py` with `FileNotFoundError` on a module
+you never cloned (e.g. `modules/lib/acpica`), that is `--meta-out` walking every
+manifest project. Apply
+[`0003-scripts-zephyr_module-skip-uncloned-projects-in-meta.patch`](../../../../patches/zephyr/)
+to your Zephyr tree; it skips projects that are not present.
+
 Two things worth knowing before you feed those files to a scanner:
 
 - **Vulnerability scanners can't map them.** The packages carry no PURL/CPE,
