@@ -1,0 +1,141 @@
+{
+ "@context": "https://openvex.dev/ns/v0.2.0",
+ "@id": "https://github.com/open-ep/zephyr-user-space-examples/vex/netvideo-w6300-2026-08-30",
+ "author": "Wig Cheng <onlywig@gmail.com>",
+ "role": "firmware author",
+ "timestamp": "2026-08-30T08:44:05.115102+00:00",
+ "version": 1,
+ "tooling": "manual triage against build .config + west spdx SBOM (zephyr @ 25179831f401-dirty)",
+ "statements": [
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10670"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "vulnerable_code_not_present",
+   "impact_statement": "CONFIG_USERSPACE is not enabled; the k_thread_name_copy() syscall verifier is not compiled into this firmware."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10669"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "vulnerable_code_not_present",
+   "impact_statement": "Xtensa MPU code; this firmware targets ARM Cortex-M33 (RP2350). No Xtensa code is present."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10668"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "component_not_present",
+   "impact_statement": "USB device stack is not enabled (no CONFIG_USB*); the Nuvoton USBD driver is not built."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10667"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "vulnerable_code_not_present",
+   "impact_statement": "CONFIG_USERSPACE and CONFIG_SMP are both disabled; the dynamic kernel-object list and SMP paths are not compiled."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10665"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "component_not_present",
+   "impact_statement": "WireGuard is not enabled; net/lib/wireguard is not built."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10664"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "component_not_present",
+   "impact_statement": "No Wi-Fi support is built (no CONFIG_WIFI); the nRF70 driver is not present."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10663"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "component_not_present",
+   "impact_statement": "USB host stack is not enabled; uhc/usbh code is not built."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10660"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "component_not_present",
+   "impact_statement": "Bluetooth is not enabled (no CONFIG_BT symbols in .config); the BAP reassembly code is not built."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10659"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "component_not_present",
+   "impact_statement": "No disk subsystem or Dhara FTL driver is built (no CONFIG_DISK*); the firmware has no filesystem at all."
+  },
+  {
+   "vulnerability": {
+    "name": "CVE-2026-10658"
+   },
+   "products": [
+    {
+     "@id": "pkg:github/zephyrproject-rtos/zephyr@25179831f4016270f689e2b6787f6eac616324b1#openep-netvideo-w6300-evb-pico2"
+    }
+   ],
+   "status": "not_affected",
+   "justification": "component_not_present",
+   "impact_statement": "Bluetooth ISO is not enabled; no CONFIG_BT symbols in .config."
+  }
+ ]
+}

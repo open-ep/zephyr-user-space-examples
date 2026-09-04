@@ -141,6 +141,36 @@ this app adds [`ethernet.overlay`](ethernet.overlay) for two things:
   you reserve it on your router. Change the last bytes if you run more than one
   board on the same LAN.
 
+## SBOM and VEX
+
+Zephyr can generate a build-accurate SPDX SBOM — it hooks the CMake file-based
+API, so it lists the files that actually went into `zephyr.elf`, not the whole
+tree. Order matters: `--init` must run against a build directory that
+`west build` will NOT wipe afterwards (`-p always` deletes the query file).
+
+```bash
+west spdx --init -d build
+west build -b w6300_evb_pico2/rp2350a/m33 -d build path/to/netvideo \
+    -- -DCONFIG_BUILD_OUTPUT_META=y
+west spdx -d build --analyze-includes --include-sdk
+# -> build/spdx/{app,zephyr,build,sdk,modules-deps}.spdx
+```
+
+Two things worth knowing before you feed those files to a scanner:
+
+- **Vulnerability scanners can't map them.** The packages carry no PURL/CPE,
+  so osv-scanner and friends report zero packages. For Zephyr the practical
+  CVE feed is the [official vulnerability list]
+  (https://docs.zephyrproject.org/latest/security/vulnerabilities.html),
+  matched against your tree by hand.
+- **That is what the VEX is for.** [`sbom/netvideo.openvex.json`](sbom/netvideo.openvex.json)
+  is our OpenVEX statement covering the Zephyr CVEs published at the time of
+  writing: all `not_affected`, each with the concrete reason from this app's
+  `.config` (no USB, no Bluetooth, no Wi-Fi, no USERSPACE/SMP, no disk — the
+  vulnerable components are simply not compiled in). The only attack surface
+  this firmware has is IPv4/TCP/DHCPv4, so networking CVEs are the ones to
+  re-check when the list grows.
+
 ## Panel discipline
 
 Full-frame writer: the whole frame goes to `0x24` on every kick, `0x37` byte 5
