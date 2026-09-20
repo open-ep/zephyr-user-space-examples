@@ -6,13 +6,15 @@ is a Raspberry Pi Pico 2 form-factor board: **RP2350** (dual Cortex-M33 @ 150 MH
 UIAPduino, this is a standalone MCU — the Zephyr firmware is the whole system.
 
 Board support is **upstream** (`w6300_evb_pico2`), so no PR branch or patches are
-needed. Most of the firmware here also builds for the plain
+needed. The samples track Zephyr main, tested with commit `3e8f38faf93`
+(2026-09-19). Most of the firmware here also builds for the plain
 **Raspberry Pi Pico 2** (`rpi_pico2/rp2350a/m33`) and produces a byte-identical
 binary, because those samples only use GP2–GP7 and never touch the W6300.
 
 The one exception is [netvideo](samples/pixpaper_213m/apps/netvideo/), which
 drives the W6300 to receive frames over Ethernet — that one needs this board,
-and two driver fixes listed in its README.
+one SPI driver fix listed in its README, and a Zephyr main from September 2026
+or later (the W6300 Kconfig symbols were renamed `CONFIG_ETH_WIZNET_*`).
 
 ## Why this board is comfortable
 
@@ -61,6 +63,7 @@ python3 -m venv .venv
 .venv/bin/pip install west
 .venv/bin/west init .
 .venv/bin/west update hal_rpi_pico cmsis_6      # only the modules this board needs
+                                                # (re-run after any `git -C zephyr pull`)
 .venv/bin/pip install -r zephyr/scripts/requirements-base.txt
 ```
 
@@ -114,16 +117,18 @@ identical across boards.
 
 ## Zephyr patches
 
-[`patches/zephyr/`](patches/zephyr/) holds two `eth_w6300` driver fixes needed
-by the `netvideo` sample: without them the chip's TX path wedges under
-sustained traffic and the board drops off the network until it is power-cycled.
-They are submitted upstream as
-[zephyrproject-rtos/zephyr#117112](https://github.com/zephyrproject-rtos/zephyr/pull/117112)
-(open, awaiting review as of August 2026) — once that merges, skip them. The
-copies here are pinned and work offline; `curl -L
-https://github.com/zephyrproject-rtos/zephyr/pull/117112.patch | git apply`
-fetches the current version instead. Nothing else in this repo needs a patched
-Zephyr.
+[`patches/zephyr/`](patches/zephyr/) holds one driver fix needed by the
+`netvideo` sample: upstream's bit-bang SPI driver does not serialize transfers
+between threads, so the W6300 driver's interrupt thread can corrupt a send
+mid-transfer and the chip's TX path wedges under sustained traffic. It is
+submitted upstream as
+[zephyrproject-rtos/zephyr#119662](https://github.com/zephyrproject-rtos/zephyr/pull/119662)
+(open as of September 2026); once that merges, skip it. The copy here is
+pinned and works offline; `curl -L
+https://github.com/zephyrproject-rtos/zephyr/pull/119662.patch | git apply`
+fetches the current version instead. The second patch only matters for
+`west spdx` (see the netvideo README). Nothing else in this repo needs a
+patched Zephyr.
 
 ## Samples
 

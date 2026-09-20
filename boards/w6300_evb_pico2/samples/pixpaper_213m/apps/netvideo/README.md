@@ -14,38 +14,41 @@ into the panel's RAM byte order — so the board only pushes ready-made 4000-byt
 frames at the controller. No filesystem, no flash writes: frames live in RAM
 and are gone at power-off.
 
-## Before you build: two driver fixes
+## Before you build: one SPI driver fix
 
-The upstream `eth_w6300` driver has two bugs that this app will hit within one
-upload — the chip's TX path wedges and the board disappears from the network
-until it is power-cycled. Fixes are submitted upstream as
-[zephyrproject-rtos/zephyr#117112](https://github.com/zephyrproject-rtos/zephyr/pull/117112);
-until they land, apply them to your Zephyr tree:
+Upstream Zephyr's bit-bang SPI driver (`drivers/spi/spi_bitbang.c`) does not
+serialize transfers between threads. The W6300 driver sends from the caller's
+context and services interrupts from a cooperative thread, so under sustained
+traffic the interrupt thread pre-empts a send in the middle of a bit-bang
+transfer and corrupts both: register reads come back wrong, TX returns `-EIO`,
+and eventually the chip's TX engine wedges. This app hits it within one clip
+upload. The fix is submitted upstream as
+[zephyrproject-rtos/zephyr#119662](https://github.com/zephyrproject-rtos/zephyr/pull/119662);
+until it lands, apply it to your Zephyr tree (it applies to trees from at least
+August 2026 onwards):
 
 ```bash
 cd ~/zephyrproject/zephyr
-git apply /path/to/this-repo/boards/w6300_evb_pico2/patches/zephyr/0001-drivers-ethernet-w6300-wait-for-TX-free-space.patch
-git apply /path/to/this-repo/boards/w6300_evb_pico2/patches/zephyr/0002-drivers-ethernet-w6300-service-interrupts-from-monitor.patch
+git am /path/to/this-repo/boards/w6300_evb_pico2/patches/zephyr/0001-drivers-spi-bitbang-serialize-transfers-with-the-context-lock.patch
 ```
 
-The copies in this repo are pinned to the version tested against these
-samples, and work offline. To pull whatever the pull request currently holds
-instead — useful if review changed it — fetch it directly:
+Measured on the same board with the same command, Zephyr main of September
+2026: unpatched failed 3 out of 3 uploads (connection reset after a few
+frames); with this one patch, repeated uploads of 96-frame clips all passed at
+8 MHz bit-bang SPI, and on-target counters showed zero TX-space waits and zero
+SENDOK timeouts.
 
-```bash
-curl -L https://github.com/zephyrproject-rtos/zephyr/pull/117112.patch | git apply
-```
+History: an earlier pull request (#117112) worked around the *symptoms* inside
+the W6300 driver (wait for TX free space before writing, re-check the interrupt
+pin from the monitor thread). Those changes made the August 2026 tree pass 10
+out of 10, but re-testing on a newer main showed the gate never engaged once
+the SPI bus was serialized, so that PR was withdrawn in favour of the SPI fix.
 
-As of August 2026 the pull request is open and awaiting first review, so expect
-to need these for a while. The two changes total about thirty lines and are
-independent of each other: the TX one is what stops the lock-up, the interrupt
-one hardens a second path that has no recovery of its own.
-
-Measured with and without, same board and same command: unpatched died on the
-**first** upload (frame 10 of 96 at the board's default 500 kHz, frame 14 at
-8 MHz) and needed a power cycle each time; patched completed **10 out of 10**
-uploads. If your `git apply` fails because the file moved, the two changes are
-small enough to redo by hand — see the patch headers for the reasoning.
+This app needs **Zephyr main from September 2026 or later** (tested with
+commit `3e8f38faf93`, 2026-09-19): the W6300 driver's Kconfig options were
+renamed `CONFIG_ETH_WIZNET_*` and `prj.conf` uses the new name. On an August
+2026 tree the build stops with `undefined symbol ETH_WIZNET_MONITOR_PERIOD`;
+rename it back to `CONFIG_ETH_W6300_MONITOR_PERIOD` there.
 
 ## Build and flash
 
@@ -156,11 +159,14 @@ west spdx -d build --analyze-includes --include-sdk
 # -> build/spdx/{app,zephyr,build,sdk,modules-deps}.spdx
 ```
 
-If the build dies in `zephyr_module.py` with `FileNotFoundError` on a module
-you never cloned (e.g. `modules/lib/acpica`), that is `--meta-out` walking every
-manifest project. Apply
-[`0003-scripts-zephyr_module-skip-uncloned-projects-in-meta.patch`](../../../../patches/zephyr/)
-to your Zephyr tree; it skips projects that are not present.
+`CONFIG_BUILD_OUTPUT_META` makes `zephyr_module.py` stat every project in
+`west.yml`, so in a workspace that only fetched the modules it needs (as the
+board README suggests) the build dies with `FileNotFoundError` on a module
+you never cloned (e.g. `modules/lib/acpica`) — still the case on Zephyr main
+`3e8f38faf93`. Apply
+[`0002-scripts-zephyr_module-skip-uncloned-projects-in-meta.patch`](../../../../patches/zephyr/)
+to your Zephyr tree; it skips projects that are not present. (A full
+`west update` avoids it too, at the cost of several GB.)
 
 Two things worth knowing before you feed those files to a scanner:
 

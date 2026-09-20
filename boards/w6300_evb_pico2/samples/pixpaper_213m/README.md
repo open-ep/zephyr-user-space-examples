@@ -28,9 +28,9 @@ planes), `video2epd.py` (video or image folder to `.epdv`), `epdv2h.py`
 panel on the network).
 
 `netvideo` is the only app here that needs anything beyond the panel: it drives
-the board's W6300 ethernet, and until [PR #117112](https://github.com/zephyrproject-rtos/zephyr/pull/117112)
-lands it needs the two driver fixes in
-[`../../patches/zephyr/`](../../patches/zephyr/). Its README explains both.
+the board's W6300 ethernet, and until [PR #119662](https://github.com/zephyrproject-rtos/zephyr/pull/119662)
+lands it needs the bit-bang SPI fix in
+[`../../patches/zephyr/`](../../patches/zephyr/). Its README explains why.
 
 ## The two partial-update disciplines
 
