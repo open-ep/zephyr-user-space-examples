@@ -11,6 +11,7 @@ alongside the existing ones.
 | Board | Core | Panel | Sample |
 | ----- | ---- | ----- | ------ |
 | [FRDM-IMX93](boards/frdm_imx93/) | Cortex-M33 | Open-EP pixpaper-213m (2.13", raw SPI) | [pixpaper_213m](boards/frdm_imx93/samples/pixpaper_213m/) |
+| [Kakip (RZ/V2H)](boards/kakip/) | Cortex-M33 + Cortex-R8, started from U-Boot | none (UART log demo) | [dual_core_hello](boards/kakip/samples/dual_core_hello/) |
 | [UIAPduino Pro Micro CH32V003](boards/uiapduino/) | CH32V003 (RISC-V, standalone) | Open-EP pixpaper-213m (2.13", bit-banged SPI) | [pixpaper_213m](boards/uiapduino/samples/pixpaper_213m/) |
 | [W6300-EVB-Pico2](boards/w6300_evb_pico2/) | RP2350 (Cortex-M33, standalone) + W6300 Ethernet | Open-EP pixpaper-213m (2.13" mono) / pixpaper-213c (2.13" 4-colour) | [pixpaper_213m](boards/w6300_evb_pico2/samples/pixpaper_213m/), [pixpaper_213c](boards/w6300_evb_pico2/samples/pixpaper_213c/) |
 

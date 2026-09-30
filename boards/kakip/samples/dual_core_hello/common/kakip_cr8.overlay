@@ -1,0 +1,24 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+/*
+ * Kakip CR8_0: no UART of its own. Keep the last 4 KB of R8SRAM out of the
+ * image for the shared log ring (common/shlog.h), and drop the EVK console.
+ */
+&sram3 {
+	reg = <0x08180000 DT_SIZE_K(508)>;
+};
+
+/ {
+	chosen {
+		/delete-property/ zephyr,console;
+		/delete-property/ zephyr,shell-uart;
+	};
+};
+
+&uart0 {
+	status = "disabled";
+};
+
+&sci0 {
+	status = "disabled";
+};

@@ -1,0 +1,12 @@
+sample:
+  name: Kakip dual-core hello - CM33 (console + CR8 log relay)
+  description: >
+    Zephyr on the RZ/V2H Cortex-M33 of the Kakip board: prints its own heartbeat
+    on SCI5 and relays the Cortex-R8 log from a ring buffer in shared SRAM.
+tests:
+  sample.boards.kakip.dual_core_hello.cm33:
+    platform_allow:
+      - rzv2h_evk/r9a09g057h44gbg/cm33
+    tags:
+      - uart
+    build_only: true

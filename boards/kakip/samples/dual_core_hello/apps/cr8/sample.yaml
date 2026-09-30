@@ -1,0 +1,10 @@
+sample:
+  name: Kakip dual-core hello - CR8 (printk into shared SRAM)
+  description: >
+    Zephyr on the RZ/V2H Cortex-R8 core 0 of the Kakip board: no UART of its own,
+    its printk output goes into a ring buffer in R8SRAM that the Cortex-M33 relays.
+tests:
+  sample.boards.kakip.dual_core_hello.cr8:
+    platform_allow:
+      - rzv2h_evk/r9a09g057h44gbg/cr8_0
+    build_only: true

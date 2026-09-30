@@ -1,0 +1,44 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+/*
+ * Kakip (RZ/V2H r9a09g057h48) on top of the rzv2h_evk CM33 board:
+ * console moves from SCI0 (P05_0/1, EVK Pmod) to SCI5 on the 40-pin
+ * header CN6 -- pin 8 = P7_2 SCI5_TXD, pin 10 = P7_3 SCI5_RXD, 115200 8N1.
+ * Pin function 1 is the one Kakip's own Linux dts uses for SCI5.
+ */
+#include <zephyr/dt-bindings/pinctrl/renesas/pinctrl-rzv2h.h>
+
+/ {
+	chosen {
+		zephyr,console = &uart5;
+		zephyr,shell-uart = &uart5;
+	};
+};
+
+&pinctrl {
+	sci5_pins: sci5 {
+		sci5-pinmux {
+			pinmux = <RZV_PINMUX(PORT_07, 2, 1)>, /* SCI5_TXD */
+				 <RZV_PINMUX(PORT_07, 3, 1)>; /* SCI5_RXD */
+		};
+	};
+};
+
+&sci0 {
+	status = "disabled";
+};
+
+&uart0 {
+	status = "disabled";
+};
+
+&sci5 {
+	pinctrl-0 = <&sci5_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	uart5: uart {
+		current-speed = <115200>;
+		status = "okay";
+	};
+};
