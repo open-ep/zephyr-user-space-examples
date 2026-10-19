@@ -41,22 +41,20 @@ export ZEPHYR_SDK_INSTALL_DIR=~/zephyr-sdk-1.0.1   # the SDK that has riscv64-ze
 
 ### 2. Zephyr workspace
 
-Upstream board support is in review
+Board support is in upstream Zephyr: `uiapduino_pro_micro_ch32v003`
 ([zephyrproject-rtos/zephyr#112278](https://github.com/zephyrproject-rtos/zephyr/pull/112278),
-board `uiapduino_pro_micro_ch32v003`). Until it merges, use the PR branch
-directly — **this is what every sample here was developed and
-hardware-verified on**:
+merged 2026-07-15). Use upstream `main` directly:
 
 ```bash
 mkdir ~/zephyrproject && cd ~/zephyrproject
 python3 -m venv .venv
 .venv/bin/pip install west
 
-# fetch the Zephyr source (PR branch from the author's fork)
-.venv/bin/west init -m https://github.com/yashi/zephyr --mr add-uiap-pro-micro .
+# fetch the Zephyr source (upstream main)
+.venv/bin/west init -m https://github.com/zephyrproject-rtos/zephyr --mr main .
 
-# pin the commit these samples were verified against:
-git -C zephyr checkout 25179831f40
+# optional: pin the upstream commit these samples were last built against
+git -C zephyr checkout 57072885aa3
 
 # fetch ONLY the WCH register-definition module (a bare `west update`
 # would download every vendor HAL — several GB you don't need)
@@ -66,14 +64,12 @@ git -C zephyr checkout 25179831f40
 .venv/bin/pip install -r zephyr/scripts/requirements-base.txt
 ```
 
-If the `git checkout` fails with `pathspec ... did not match`, the PR branch
-has been rebased again and the pinned commit is no longer fetchable — build
-against the current branch tip instead (`git -C zephyr log --oneline -1` to
-record which), and expect a slightly different binary than documented.
-
-Once the PR merges upstream, switch the manifest back to
-`zephyrproject-rtos/zephyr` `main` — the board name stays the same, so the
-apps need no changes.
+The samples were originally developed on the author's PR branch
+(`yashi/zephyr`, `add-uiap-pro-micro`); that branch was deleted after the
+merge, so the old `west init -m https://github.com/yashi/zephyr ...` line no
+longer works. Newer upstream commits should build too; if the reported
+flash/RAM numbers differ slightly from the ones documented here, that is
+expected.
 
 ### 3. Build a sample
 
