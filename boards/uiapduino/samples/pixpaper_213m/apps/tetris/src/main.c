@@ -640,27 +640,29 @@ static void move_to(int nr, int npx, int npy)
 	flush_rows(r0, r1);
 }
 
-/* one autoplay tick: rotate, else shift, else fall/lock */
+/* one autoplay tick: at most one adjustment (rotate, else shift one column)
+ * made while the piece falls one row, the way a player steers a falling
+ * piece. A blocked adjustment is retried on later ticks; if the stack gets
+ * in the way the piece may land off-target, which is fine for a demo. */
 static void step(void)
 {
-	if (cur_r != tgt_r) {
-		int nr = (cur_r + 1) & 3;
+	int nr = cur_r, npx = cur_px;
 
-		if (!collides(cur_t, nr, cur_px, cur_py)) {
-			move_to(nr, cur_px, cur_py);
-			return;
+	if (cur_r != tgt_r && !collides(cur_t, (cur_r + 1) & 3, cur_px, cur_py)) {
+		nr = (cur_r + 1) & 3;
+	} else if (cur_px != tgt_px) {
+		int s = cur_px + (tgt_px > cur_px ? 1 : -1);
+
+		if (!collides(cur_t, cur_r, s, cur_py)) {
+			npx = s;
 		}
 	}
-	if (cur_px != tgt_px) {
-		int npx = cur_px + (tgt_px > cur_px ? 1 : -1);
-
-		if (!collides(cur_t, cur_r, npx, cur_py)) {
-			move_to(cur_r, npx, cur_py);
-			return;
-		}
+	if (!collides(cur_t, nr, npx, cur_py + 1)) {
+		move_to(nr, npx, cur_py + 1);   /* adjust + fall in one redraw */
+		return;
 	}
-	if (!collides(cur_t, cur_r, cur_px, cur_py + 1)) {
-		move_to(cur_r, cur_px, cur_py + 1);
+	if (nr != cur_r || npx != cur_px) {
+		move_to(nr, npx, cur_py);       /* resting on the stack: slide */
 		return;
 	}
 
