@@ -71,7 +71,7 @@ names (the names the U-Boot lines in the board README use):
 
 | Build output | Copy to the SD card as | Size |
 | ------------ | ---------------------- | ---- |
-| `build-cm33/zephyr/zephyr.bin` | `kakip_cm33.bin` | ~22 KB |
+| `build-cm33/zephyr/zephyr.bin` | `kakip_cm33.bin` | ~23 KB |
 | `build-cr8/zephyr/cr8_itcm.bin` | `kakip_cr8_itcm.bin` | 60 B |
 | `build-cr8/zephyr/cr8_sram.bin` | `kakip_cr8_sram.bin` | ~32 KB |
 
