@@ -65,7 +65,12 @@ Cortex-M33 and `cmsis` (CMSIS 5) by the Cortex-R8. If the R8 build fails with
 
 ### 3. Build
 
-See the sample: [dual_core_hello](samples/dual_core_hello/).
+See the samples:
+
+| Sample | What it shows |
+| ------ | ------------- |
+| [dual_core_hello](samples/dual_core_hello/) | Zephyr on the M33 and the R8 at once, both logging to one UART. Proven on hardware; start here. |
+| [pixpaper_213m](samples/pixpaper_213m/) | The M33 driving an Open-EP pixpaper-213m e-paper panel over RSPI0. Proven on hardware. |
 
 ## Wiring
 

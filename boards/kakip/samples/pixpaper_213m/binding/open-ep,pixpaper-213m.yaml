@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Open-EP pixpaper-213m 2.13" monochrome e-paper panel, driven over raw SPI.
+  DC/RST are plain GPIOs and BUSY is read back.
+
+compatible: "open-ep,pixpaper-213m"
+
+include: spi-device.yaml
+
+properties:
+  dc-gpios:
+    type: phandle-array
+    required: true
+    description: Data/command select. Low = command, high = data.
+
+  reset-gpios:
+    type: phandle-array
+    required: true
+    description: Hardware reset. Driven low to reset.
+
+  busy-gpios:
+    type: phandle-array
+    required: true
+    description: BUSY status, active high (panel busy while high).

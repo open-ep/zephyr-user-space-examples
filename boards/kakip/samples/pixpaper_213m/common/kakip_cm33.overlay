@@ -1,0 +1,90 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Open-EP pixpaper-213m 2.13" e-paper on the Kakip (RZ/V2H) Cortex-M33.
+ *
+ * Same pins as Kakip's own Linux pixpaper overlay, so one wiring serves both:
+ *   SPI  : RSPI0 (Zephyr "spi0")  SCK = P9_2 (CN6 pin 23)  MOSI = P9_0 (CN6 pin 19)
+ *   CS   : P9_3 as a GPIO         (CN6 pin 24, the header's CE0 position)
+ *   DC   : P7_4                   (CN6 pin 29)  low = command, high = data
+ *   RST  : P10_7                  (CN6 pin 31)  low = reset
+ *   BUSY : P11_3                  (CN6 pin 37)  high = busy
+ * Console: SCI5 on CN6 pin 8 (TXD) / 10 (RXD), 115200 8N1, as in the board README.
+ */
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/pinctrl/renesas/pinctrl-rzv2h.h>
+
+/ {
+	chosen {
+		zephyr,console = &uart5;
+		zephyr,shell-uart = &uart5;
+	};
+};
+
+&pinctrl {
+	sci5_pins: sci5 {
+		sci5-pinmux {
+			pinmux = <RZV_PINMUX(PORT_07, 2, 1)>, /* SCI5_TXD */
+				 <RZV_PINMUX(PORT_07, 3, 1)>; /* SCI5_RXD */
+		};
+	};
+
+	spi0_pins: spi0 {
+		spi0-pinmux {
+			pinmux = <RZV_PINMUX(PORT_09, 2, 1)>, /* RSPI0 CK   */
+				 <RZV_PINMUX(PORT_09, 0, 1)>, /* RSPI0 MOSI */
+				 <RZV_PINMUX(PORT_09, 1, 1)>; /* RSPI0 MISO (unused by the panel) */
+		};
+	};
+};
+
+&sci0 {
+	status = "disabled";
+};
+
+&uart0 {
+	status = "disabled";
+};
+
+&sci5 {
+	pinctrl-0 = <&sci5_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	uart5: uart {
+		current-speed = <115200>;
+		status = "okay";
+	};
+};
+
+&gpio7 {
+	status = "okay";
+};
+
+&gpio9 {
+	status = "okay";
+};
+
+&gpio10 {
+	status = "okay";
+};
+
+&gpio11 {
+	status = "okay";
+};
+
+&spi0 {
+	pinctrl-0 = <&spi0_pins>;
+	pinctrl-names = "default";
+	cs-gpios = <&gpio9 3 GPIO_ACTIVE_LOW>;
+	status = "okay";
+
+	epd: epd@0 {
+		compatible = "open-ep,pixpaper-213m";
+		reg = <0>;
+		spi-max-frequency = <4000000>;
+		dc-gpios = <&gpio7 4 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio10 7 GPIO_ACTIVE_HIGH>;
+		busy-gpios = <&gpio11 3 GPIO_ACTIVE_HIGH>;
+	};
+};

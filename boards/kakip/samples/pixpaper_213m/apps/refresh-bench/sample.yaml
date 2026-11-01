@@ -1,0 +1,15 @@
+sample:
+  name: pixpaper-213m e-paper - refresh-bench (partial refresh speed) on Kakip CM33
+  description: >
+    Measure how fast the Open-EP pixpaper-213m can be updated in partial-refresh
+    mode from the Kakip (RZ/V2H) Cortex-M33 over RSPI0: SPI time, panel time and
+    frames per second for several waveform lengths.
+tests:
+  sample.boards.kakip.pixpaper_213m.refresh_bench:
+    platform_allow:
+      - rzv2h_evk/r9a09g057h44gbg/cm33
+    tags:
+      - spi
+      - gpio
+      - displays
+    build_only: true
