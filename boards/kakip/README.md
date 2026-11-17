@@ -71,7 +71,7 @@ See the samples:
 | ------ | ------------- |
 | [dual_core_hello](samples/dual_core_hello/) | Zephyr on the M33 and the R8 at once, both logging to one UART. Proven on hardware; start here. |
 | [pixpaper_213m](samples/pixpaper_213m/) | The M33 driving an Open-EP pixpaper-213m e-paper panel over RSPI0. Proven on hardware. |
-| [pixpaper_426m](samples/pixpaper_426m/) | The M33 driving a PIXPAPER-426-M (800x480) as a Zephyr display, with LVGL. Builds; hardware test pending. |
+| [pixpaper_426m](samples/pixpaper_426m/) | The M33 driving a PIXPAPER-426-M (800x480) as a Zephyr display, with LVGL. Proven on hardware. |
 
 ## Wiring
 

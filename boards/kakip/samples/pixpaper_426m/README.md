@@ -9,7 +9,7 @@ that uses the display API runs on it, including **LVGL**.
 > the M33 are in the [board README](../../README.md). Do those first. LVGL also
 > needs `west update lvgl`.
 
-**Status**: builds; not yet tried on hardware.
+**Status**: proven on hardware. Step-by-step guide: [ZEPHYR-KAKIP-CM33_PIXPAPAER-426-M.md](https://github.com/open-ep/PIXPAPER-426-M/blob/main/ZEPHYR-KAKIP-CM33_PIXPAPAER-426-M.md).
 
 ## Apps
 
